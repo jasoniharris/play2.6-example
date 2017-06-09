@@ -23,7 +23,7 @@ class HomeController @Inject()() extends InjectedController with I18nSupport {
     */
   def login = Action { implicit request =>
     println(s"loginContent CSRF TOKEN: ${CSRF.getToken}")
-    Ok(views.html.index(users, signInForm))
+    Ok(views.html.login(users, signInForm))
   }
 
   def postLogin = Action { implicit request =>
