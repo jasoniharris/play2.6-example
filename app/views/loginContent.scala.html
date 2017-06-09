@@ -1,0 +1,30 @@
+@(users: List[RadioButton], signInForm: Form[User])(implicit messages: Messages, request: Request[_])
+<div id="content" class="wrapper doc">
+    @helper.form(action = routes.HomeController.postLogin()) {
+        @helper.CSRF.formField
+        <div class="form-group">
+            <fieldset>
+                <legend id="BAS-loginContent-form">
+
+                    <span id="signin-form-title-text" class="form-label-bold">
+                        @Messages("login.title")
+                    </span>
+
+                    <span id="signin-form-validation-errors" class="error-message">
+                    @signInForm("user").errors.map { error =>
+                        <div class="error-message">"Error"</div>
+                    }
+                    </span>
+
+                </legend>
+                @for(user <- users) {
+                    <div class="multiple-choice">
+                        <input id=@user.id type="radio" name="user" value=@user.value>
+                        <label id=@user.labelId for=@user.id>@user.text</label>
+                    </div>
+                }
+            </fieldset>
+        </div>
+        <input class="button" type="submit" value="Submit">
+        }
+</div>

@@ -1,7 +1,7 @@
 package controllers
 
-import javax.inject._
 
+import com.google.inject.Inject
 import models.Forms.{signInForm, users}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -12,38 +12,32 @@ import utils.Constants._
   * This controller creates an `Action` to handle HTTP requests to the
   * application's home page.
   */
-@Singleton
 class HomeController @Inject()() extends InjectedController with I18nSupport {
 
-  def index = Action { implicit request =>
-    Ok(views.html.index("Your new application is ready."))
-  }
-
+  /** GET /loginContent
+    *
+    * Renders loginContentContent.scala.html view and form
+    * Passes list of valid users
+    * CSRF token passed via global Filters
+    * @return
+    */
   def login = Action { implicit request =>
-    println(CSRF.getToken)
-    Ok(views.html.login(users, signInForm))
+    println(s"loginContent CSRF TOKEN: ${CSRF.getToken}")
+    Ok(views.html.index(users, signInForm))
   }
 
   def postLogin = Action { implicit request =>
-
     val token: Option[CSRF.Token] = CSRF.getToken
-    println("CSRF TOKEN  IS: " + token)
+    println("postLogin CSRF TOKEN: " + token)
 
     signInForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest(views.html.login(users, formWithErrors))
       },
       data => {
-        buildResponse(data.name)
+        Ok(generateAuthCode(data.name))
       }
     )
-  }
-
-
-  def buildResponse(user: String)(implicit req: RequestHeader): Result = {
-
-    val code = generateAuthCode(user)
-    Ok(code)
   }
 
   def generateAuthCode(user: String): String = {
@@ -56,5 +50,4 @@ class HomeController @Inject()() extends InjectedController with I18nSupport {
       case _ => `unauthorisedAuthCode`
     }
   }
-
 }
