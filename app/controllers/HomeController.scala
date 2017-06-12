@@ -12,13 +12,20 @@ import utils.Constants._
   * This controller creates an `Action` to handle HTTP requests to the
   * application's home page.
   */
-class HomeController @Inject()() extends InjectedController with I18nSupport {
+class HomeController @Inject()(components: ControllerComponents)
+  extends AbstractController(components) with I18nSupport {
+
+  def index() = Action { implicit request =>
+    Ok("Ok")
+  }
+
 
   /** GET /loginContent
     *
     * Renders loginContentContent.scala.html view and form
     * Passes list of valid users
     * CSRF token passed via global Filters
+    *
     * @return
     */
   def login = Action { implicit request =>
